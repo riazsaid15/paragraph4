@@ -1,0 +1,12 @@
+color_node.classes.*:
+  type: config_entity
+  label: 'Classes config'
+  mapping:
+    id:
+      type: string
+      label: 'ID'
+    label:
+      type: label
+      label: 'Label'
+    uuid:
+      type: string

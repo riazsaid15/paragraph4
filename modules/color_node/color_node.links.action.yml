@@ -1,0 +1,5 @@
+entity.classes.add_form:
+  route_name: entity.classes.add_form
+  title: 'Add Classes'
+  appears_on:
+    - entity.classes.collection

@@ -1,0 +1,203 @@
+<?php
+
+/**
+ * @file
+ * Contains color_node.module.
+ */
+
+
+
+use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\Core\Entity\EntityTypeInterface;
+use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Field\FieldDefinition;
+use Drupal\Core\Field\BaseFieldDefinition;
+use Drupal\Core\Database\Database;
+use Drupal\Core\Form\FormBase;
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Field\FormatterInterface;
+use Drupal\Core\Entity\Entity\EntityViewDisplay;
+use Drupal\Core\Entity\ContentEntityForm;
+use Drupal\Core\Config;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
+
+
+
+/**
+ * Implements hook_help().
+ */
+function color_node_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    // Main module help for the color_node module.
+    case 'help.page.color_node':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('My Awesome Module') . '</p>';
+      return $output;
+
+    default:
+  }
+}
+
+
+
+function color_node_page_attachments(array &$attachments) {
+  // Unconditionally attach an asset to the page.
+  $attachments['#attached']['library'][] = 'color_node/custom_style';
+}
+
+
+
+
+
+/**
+ * Implements hook_entity_base_field_info().
+ */
+function color_node_entity_base_field_info(EntityTypeInterface $entity_type) {
+  if ($entity_type->id() === 'node') {
+    $result = \Drupal::database()->select('color_node', 'c')
+              ->fields('c', array('name'))
+              ->execute()->fetchAllAssoc('name');
+  // Create the row element.
+      $rows = array();
+      $rows1 = array();
+      foreach ($result as $row => $content) {
+        $rows[$row] =   $row;
+  }
+
+  $storage = \Drupal::entityTypeManager()->getStorage('classes');
+$config_entities = $storage->loadMultiple();
+$list = [];
+foreach ($config_entities as $id => $entity) {
+  $list[$id] = $entity->label();
+}
+$result = array_merge($rows,$list);
+
+  $color = ['black', 'blue', 'light-gray', 'silver', 'aqua' ];
+
+  // $fields['color_node1'] = BaseFieldDefinition::create('list_string')
+  // ->setLabel(t('css color'))
+  // ->setSettings([
+  //   'allowed_values' => $color,
+  // ])
+  // ->setDisplayOptions('form', [
+  //   'type' => 'options_select',
+  // ])
+  // ->setDisplayConfigurable('form', TRUE);
+
+  $fields['color_node'] = BaseFieldDefinition::create('list_string')
+  ->setLabel(t('css classes'))
+  ->setSettings([
+    'allowed_values' => $result,
+  ])
+  ->setDisplayOptions('form', [
+    'type' => 'options_select',
+  ])
+  ->setDisplayConfigurable('form', TRUE);
+
+
+
+    $fields['mymodule_text'] = BaseFieldDefinition::create('string')
+      ->setLabel(t('The text'))
+      ->setDescription(t('A text property added by mymodule.'))
+      ->setComputed(TRUE);
+    return $fields;
+  }
+}
+
+/**
+ * Implements hook_preprocess_html().
+ */
+
+
+ function color_node_preprocess_node(&$variables) {
+ // print_r($variables);
+   if (!empty($variables['node'])) {
+     $entity = $variables['node'];
+     $classes = $entity->get('color_node')->getValue();
+     // $classes1 = $entity->get('color_node')->getValue();
+
+     $variables['attributes']['class'][] = $classes['0']['value'];
+   }
+ }
+
+
+
+
+function color_node_field_formatter_third_party_settings_form(FormatterInterface $plugin) {
+
+  $element = [];
+
+  if (in_array($plugin->getPluginId(), ['image', 'responsive_image'])) {
+    $result = \Drupal::database()->select('color_node', 'c')
+              ->fields('c', array('name'))
+              ->execute()->fetchAllAssoc('name');
+      $rows = array();
+      $rows1 = array();
+
+      foreach ($result as $row => $content) {
+        $rows[$row] =   $row;
+  }
+
+
+  $storage = \Drupal::entityTypeManager()->getStorage('classes');
+$config_entities = $storage->loadMultiple();
+$list = [];
+foreach ($config_entities as $id => $entity) {
+  $list[$id] = $entity->label();
+}
+
+$result = array_merge($rows,$list);
+
+
+    $element['class'] = [
+      '#type' => 'select',
+      '#title' => t('Class'),
+      '#options' => $result,
+      '#description' => t('Select Class classes which will be added to the %img element.', ['%img' => '<img>']),
+      '#default_value' => $result,
+
+    ];
+  }
+
+  return $element;
+}
+
+/**
+ * Implements hook_field_formatter_settings_summary_alter().
+ */
+function color_node_field_formatter_settings_summary_alter(&$summary, $context) {
+  /** @var \Drupal\Core\Field\FormatterInterface $formatter */
+  $formatter = $context['formatter'];
+
+  if ($class = $formatter->getThirdPartySetting('color_node', 'class')) {
+    $summary[] = t('Class: @class', ['@class' => $class]);
+  }
+}
+
+/**
+ * Implements hook_preprocess_field().
+ */
+function color_node_preprocess_field(&$variables) {
+  $element = $variables['element'];
+
+  /** @var \Drupal\Core\Entity\FieldableEntityInterface $entity */
+  $entity = $element['#object'];
+
+  $entity_display = EntityViewDisplay::collectRenderDisplay($entity, $element['#view_mode']);
+  $field_display = $entity_display->getComponent($element['#field_name']);
+
+  if (isset($field_display['third_party_settings']['color_node']['class'])) {
+    $class = explode(' ', $field_display['third_party_settings']['color_node']['class']);
+
+    foreach ($variables['items'] as $delta => &$item) {
+      // Preserve any classes that has been set already.
+      if (isset($item['content']['#item_attributes']['class']) && is_array($item['content']['#item_attributes']['class'])) {
+        $class = array_merge($item['content']['#item_attributes']['class'], $class);
+      }
+
+      $item['content']['#item_attributes']['class'] = $class;
+
+    }
+  }
+}

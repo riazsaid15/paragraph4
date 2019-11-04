@@ -1,0 +1,8 @@
+custom_style:
+  version: 1.x
+  css:
+    theme:
+      css/hover-min.css: {}
+      css/custom_style_node.css: {}
+  js:
+    js/custom.js: {}

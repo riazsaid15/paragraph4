@@ -1,0 +1,7 @@
+color_node.default_form:
+  path: '/admin/config/content/color-node'
+  defaults:
+    _form: '\Drupal\color_node\Form\ColorNode'
+    _title: 'ColorNode'
+  requirements:
+    _access: 'TRUE'

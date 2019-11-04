@@ -1,0 +1,14 @@
+color_node.default_form:
+  title: 'Color Node'
+  description: 'Form to Enter CSS Classes'
+  route_name: color_node.default_form
+  parent: system.admin_config_content
+  weight: 20
+
+# Classes menu items definition
+entity.classes.collection:
+  title: 'Classes'
+  route_name: entity.classes.collection
+  description: 'List Classes (bundles)'
+  parent: system.admin_structure
+  weight: 99

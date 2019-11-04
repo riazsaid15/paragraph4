@@ -1,0 +1,41 @@
+<?php
+function color_node_schema(){
+    $schema['color_node'] = array(
+        'description' => 'The table for storing the css classes',
+        'fields' => array(
+            'id' => array(
+                'description' => 'The primary identifier for table.',
+                'type' => 'serial',
+                'not null' => TRUE,
+                'unsigned' => TRUE,
+            ),
+
+            'name' => array(
+                'description' => '',
+                'type' => 'varchar',
+                'length' => 255,
+                'not null' => TRUE,
+                'default' => '',
+            ),
+        ),
+        'primary key' => array('id'),
+    );
+    return $schema;
+}
+
+function color_node_install() {
+  $insert = array();
+  $insert = ['hvr-grow' , 'hvr-pulse' , 'hvr-shrink' , 'hvr-pulse' , 'hvr-pulse-grow' , 'hvr-push' , 'hvr-pop' ,
+'hvr-bounce-in' , 'hvr-bounce-out' , 'hvr-rotate' , 'hvr-grow-rotate' , 'hvr-float' , 'hvr-sink' , 'hvr-bop' ,
+'hvr-hang' , 'hvr-skew' , 'hvr-skew-forward' , 'hvr-skew-backward' , 'hvr-wobble-horizontal' , 'hvr-wobble-verticle' , 'hvr-wobble-to-bottom-right' ,
+'hvr-wobble-bottom' , 'hvr-wobble-skew' , 'hvr-buzz' , 'hvr-buzz-out' , 'hvr-forward' , 'hvr-backward' , 'hvr-fade' , 'hvr-sweep-to-right' ,
+'hvr-sweep-to-bottom' , 'hvr-sweep-to-left' , 'hvr-sweep-to-top' , 'hvr-bounce-to-bottom' , 'hvr-bounce-to-top' , 'hvr-bounce-to-left' , 'hvr-bounce-to-right' , 'hvr-radial-out' ,
+'hvr-radial-in' , 'hvr-rectangle-in' , 'hvr-rectangle-out' , 'hvr-shutter-in-horizontal' , 'hvr-shutter-out-horizontal' , 'hvr-shutter-in-vertical'];
+  foreach ($insert as $key => $value) {
+    db_insert('color_node')
+       ->fields(array(
+           'name' => $value,
+         ))
+       ->execute();
+  }
+}
