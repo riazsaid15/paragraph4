@@ -1,0 +1,30 @@
+{% set align = content.field_text_alignment['#items'].getString() %}
+{% set width = content.field_card_width['#items'].getString() %}
+{% set pos = content.field_image_position['#items'].getString() %}
+{% set overlay = content.field_image_overlay['#items'].getString() %}
+{% set overlay = content.field_image_overlay['#items'].getString() %}
+{% set vertical= content.field_vertical['#items'].getString() %}
+
+
+{% if vertical==0 %}
+<div class="card text-{{ align }} {{ width}}" style="width: 18rem;">
+    <img src="{{ content.bp_image_field[0] }} " class="card-img-top order-{{ pos }}" alt="...">
+    <div class="{{ overlay }}">
+      {{ content.field_card_body }}
+    </div>
+</div>
+{% endif %}
+{% if vertical==1 %}
+<div class="card text-{{ align }} {{ width}}" style="width: 18rem;">
+  <div class="row no-gutters">
+    <div class="col-md-4">
+    <img src="{{ content.bp_image_field[0] }} " class="card-img-top order-{{ pos }}" alt="...">
+    </div>
+    <div class="col-md-8">
+      <div class="{{ overlay }}">
+        {{ content.field_card_body }}
+      </div>
+    </div>
+  </div>
+</div>
+{% endif %}
