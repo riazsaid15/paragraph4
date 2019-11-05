@@ -1,0 +1,16 @@
+
+# Cardalign menu items definition
+entity.cardalign.collection:
+  title: 'Cardalign'
+  route_name: entity.cardalign.collection
+  description: 'List Cardalign (bundles)'
+  parent: system.admin_structure
+  weight: 99
+
+# Cardwidth menu items definition
+entity.cardwidth.collection:
+  title: 'Cardwidth'
+  route_name: entity.cardwidth.collection
+  description: 'List Cardwidth (bundles)'
+  parent: system.admin_structure
+  weight: 99

@@ -1,0 +1,13 @@
+{
+    "name": "card",
+    "type": "drupal-module",
+    "description": "This is Card Module for paragraph [D[D[D[D[D[D[D[D[D[D[D[D[D[D[D bootstrap [D4 varaition paragraph",
+    "keywords": [
+    ],
+    "homepage": "https://www.drupal.org/project/card",
+    "minimum-stability": "dev",
+    "support": {
+        "issues": "https://www.drupal.org/project/issues/card",
+        "source": "http://cgit.drupalcode.org/card",
+    },
+}

@@ -1,0 +1,10 @@
+entity.cardalign.add_form:
+  route_name: entity.cardalign.add_form
+  title: 'Add Cardalign'
+  appears_on:
+    - entity.cardalign.collection
+entity.cardwidth.add_form:
+  route_name: entity.cardwidth.add_form
+  title: 'Add Cardwidth'
+  appears_on:
+    - entity.cardwidth.collection

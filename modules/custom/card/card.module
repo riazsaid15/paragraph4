@@ -1,0 +1,127 @@
+<?php
+
+/**
+ * @file
+ * Contains card.module.
+ */
+
+use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\Core\Entity\EntityTypeInterface;
+use Drupal\Core\Field\BaseFieldDefinition;
+
+/**
+ * Implements hook_help().
+ */
+function card_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    // Main module help for the card module.
+    case 'help.page.card':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('This is Card Module for paragraph') . '</p>';
+      return $output;
+
+    default:
+  }
+}
+
+
+function card_entity_base_field_info(EntityTypeInterface $entity_type) {
+ if ($entity_type->id() === 'node') {
+  $storage = \Drupal::entityTypeManager()->getStorage('cardalign');
+  $config_entities = $storage->loadMultiple();
+  $list = [];
+  foreach ($config_entities as $id => $entity) {
+    $list[$id] = $entity->label();
+  }
+  $result = $list;
+
+    $fields['card'] = BaseFieldDefinition::create('list_string')
+    ->setLabel(t('Text Alignment'))
+    ->setSettings([
+      'allowed_values' => $result,
+    ])
+    ->setDisplayOptions('form', [
+      'type' => 'options_select',
+    ])
+    ->setDisplayConfigurable('form', TRUE);
+
+
+
+      $fields['mymodule_text'] = BaseFieldDefinition::create('string')
+        ->setLabel(t('The text'))
+        ->setDescription(t('A text property added by mymodule.'))
+        ->setComputed(TRUE);
+      return $fields;
+
+
+  /**
+   * Implements hook_preprocess_html().
+   */
+
+
+   function card_preprocess_node(&$variables) {
+     if (!empty($variables['node'])) {
+       $entity = $variables['node'];
+       $classes = $entity->get('card')->getValue();
+       // $classes1 = $entity->get('color_node')->getValue();
+
+       $variables['align'] = $classes['0']['value'];
+     }
+   }
+
+/**
+// * Implements hook_entity_base_field_info().
+// */
+//function card_entity_base_field_info(EntityTypeInterface $entity_type) {
+//  if ($entity_type->id() === 'node') {
+//    $result = \Drupal::database()->select('color_node', 'c')
+//              ->fields('c', array('name'))
+//              ->execute()->fetchAllAssoc('name');
+//  // Create the row element.
+//      $rows = array();
+//      $rows1 = array();
+//      foreach ($result as $row => $content) {
+//        $rows[$row] =   $row;
+//  }
+//
+//  $storage = \Drupal::entityTypeManager()->getStorage('classes');
+//$config_entities = $storage->loadMultiple();
+//$list = [];
+//foreach ($config_entities as $id => $entity) {
+//  $list[$id] = $entity->label();
+//}
+//$result = array_merge($rows,$list);
+//
+//  $color = ['black', 'blue', 'light-gray', 'silver', 'aqua' ];
+//
+//  // $fields['color_node1'] = BaseFieldDefinition::create('list_string')
+//  // ->setLabel(t('css color'))
+//  // ->setSettings([
+//  //   'allowed_values' => $color,
+//  // ])
+//  // ->setDisplayOptions('form', [
+//  //   'type' => 'options_select',
+//  // ])
+//  // ->setDisplayConfigurable('form', TRUE);
+//
+//  $fields['color_node'] = BaseFieldDefinition::create('list_string')
+//  ->setLabel(t('css classes'))
+//  ->setSettings([
+//    'allowed_values' => $result,
+//  ])
+//  ->setDisplayOptions('form', [
+//    'type' => 'options_select',
+//  ])
+//  ->setDisplayConfigurable('form', TRUE);
+//
+//
+//
+//    $fields['mymodule_text'] = BaseFieldDefinition::create('string')
+//      ->setLabel(t('The text'))
+//      ->setDescription(t('A text property added by mymodule.'))
+//      ->setComputed(TRUE);
+//    return $fields;
+
+  }
+}
